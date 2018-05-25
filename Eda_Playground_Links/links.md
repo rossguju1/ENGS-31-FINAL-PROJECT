@@ -10,4 +10,5 @@ A [edaplayground site](https://www.edaplayground.com/) "Title"
 **format**
 `Link Name` : `description`
 
+[VGA Timing](https://www.edaplayground.com/x/2BKF)
 
