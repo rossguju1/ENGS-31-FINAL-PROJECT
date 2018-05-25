@@ -16,7 +16,91 @@ port( clk : in std_logic;
 END controller;
 
 Architecture behavior of controller is
+c
+--------- onstants for grid ----------------------------------------------------
 
+constant columnNum : integer := 80;
+
+constant rowNum : integer := 60;  
+
+constant gridSize : integer := (columns * rows); 
+
+
+-------- Constants for neighboring organisms positions in a cell ---------------
+
+
+--------
+--xoo---
+--o*o---
+--ooo---
+--------
+
+
+
+constant topLeft : integer := (columnNum - 1); 
+
+--------
+--oxo---
+--o*o---
+--ooo---
+--------
+
+constant topMiddle : integer := (columnNum); 
+
+--------
+--oox---
+--o*o---
+--ooo---
+--------
+
+constant topRight : integer := (columnNum + 1); 
+
+--------
+--ooo---
+--x*o---
+--ooo---
+--------
+
+
+constant middleLeft : integer := 1; 
+
+
+--------
+--ooo---
+--o*x---
+--ooo---
+--------
+
+constant middleRight : integer := 1; 
+
+--------
+--ooo---
+--o*o---
+--xoo---
+--------
+
+constant bottomLeft : integer := (columnNum - 1);
+
+--------
+--ooo---
+--o*o---
+--oxo---
+--------
+
+constant bottomMiddle : <type> := (columnNum); 
+
+--------
+--ooo---
+--o*o---
+--oox---
+--------
+
+constant bottonRight : <type> := (columnNum + 1); 
+
+
+
+
+-------- State type and state signals declarations ------------------------------
 
 
 type state_type is (update_vga, update_RAM, load_init_cond);
@@ -24,42 +108,41 @@ type state_type is (update_vga, update_RAM, load_init_cond);
 signal current_state, next_state : state_type;
 
 
-signal ROM1 is array (0 to 4800) of std_logic_vector(33 down to 0) := location;
+-------- Register 1D memmory and signals declaration ----------------------------
 
-signal ROM2 is array (0 to 4800) of std_logic_vector(33 down to 0);
-
-
--- 
+type register_memory is array(0 to gridSize) of std_logic;
 
 
+signal RAM1, RAM2 : register_memory;
+
+
+-------- Declaration and initialization of Process Signals ----------------------
+
+signal register_position : integer := 0;
+
+
+signal load_VGA_enable, load_enable, read_enable : std_logic := '0';
+
+signal nbr_count : unsigned(3 downto 0) := "0000";
+
+-------- state_update process ----------------------------------------------------
 
 BEGIN 
 
 state_update: process(clk)
 begin
 	if rising_edge(clk) then
-    	current_state<=next_state;
+    	current_state <= next_state;
     end if;
 end process state_update;
 
 
--- load_enable ~> used for importing initial cells
 
 
--- update_enable ~> 
-
-
--- register_position ~> to index the register address
-
--- 
-
-signal load_VGA_enable, load_enable, update_enable : std_logic := '0';
-
-signal register_position : std_logic_vector(3 downto 0);
-
-signal 
 
 update_proc : process(clk)
+
+--variable position : integer := 0;
 
 BEGIN
 	if rising_edge(clk) then
@@ -67,10 +150,134 @@ BEGIN
 		-- and for VGA to read it
 		if (load_VGA_enable = '0') then
 
-			if (update_enable = '1') then
+			if (read_enable = '1') then
 			-- update_RAM state
+				if (register_position < 9) then 
 
-				if (register_position = "0000") then
+					if (RAM1(register_position + 1) = '1') then 
+
+						nbr_count <= nbr_count + 1;
+					end if;
+				-- only add
+
+					if (RAM1(register_position + (columnNum - 1)) = '1') then 	
+
+						nbr_count <= nbr_count + 1;
+					end if; 
+
+					if (RAM1(register_position + columnNum) = '1') then 
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position + (columnNum + 1)) = '1') then 
+
+						nbr_count <= nbr_count + 1;
+					end if; 			 									
+
+				elsif (register_position > 90) then
+
+					if (RAM1(register_position - 1) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position - (columnNum - 1) ) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position - 10) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position - (columnNum + 1)) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+				-- only subtr
+
+				else 
+
+					if (RAM1(register_position - 1) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position - (columnNum - 1)) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position - (columnNum)) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;	
+
+					if (RAM1(register_position - (columnNum + 1)) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+
+					if (RAM1(register_position + 1) = '1') then
+
+		 				nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position + (columnNum - 1)) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position + columnNum) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+					if (RAM1(register_position + (columnNum + 1)) = '1') then
+
+						nbr_count <= nbr_count + 1;
+					end if;
+
+				end if;
+
+
+			if (RAM1(register_position) = '1') then
+
+				if (nbr_count = "0010") then
+
+						RAM2(register_position) <= '1';
+
+				elsif (nbr_count = "0011") then
+
+					RAM2(register_position) <= '1';
+
+				else
+
+					RAM2(register_position) <= '0';
+
+				end if;
+
+			elsif (RAM1(register_position) = '0') then
+
+				if (nbr_count = "0011") then
+
+					RAM2(register_position) <= '1';
+
+				end if;
+
+			end if;
+
+
+					
+
+			register_position = register_position + 1;
+
+
+
 
 
 
@@ -84,6 +291,7 @@ BEGIN
 	end if;
 
 end process update_proc;
+
 
 
 
