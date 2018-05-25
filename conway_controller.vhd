@@ -9,14 +9,16 @@ use IEEE.numeric_std.all;
 
 ENTITY controller is
 port( clk : in std_logic;
-		clear : in std_logic;
 
-		--location : in std_logic_vector(12 downto 0)
-        alive_or_dead : out std_logic);
+		import : in std_logic;
+
+		import_data : in array(0 to 4799) of std_logic;
+
+        alive_or_dead : out array(0 to 4799) of std_logic);
 END controller;
 
 Architecture behavior of controller is
-c
+
 --------- onstants for grid ----------------------------------------------------
 
 constant columnNum : integer := 80;
@@ -37,65 +39,65 @@ constant gridSize : integer := (columns * rows);
 
 
 
-constant topLeft : integer := (columnNum - 1); 
+--constant topLeft : integer := (columnNum - 1); 
 
---------
---oxo---
---o*o---
---ooo---
---------
+----------
+----oxo---
+----o*o---
+----ooo---
+----------
 
-constant topMiddle : integer := (columnNum); 
+--constant topMiddle : integer := (columnNum); 
 
---------
---oox---
---o*o---
---ooo---
---------
+----------
+----oox---
+----o*o---
+----ooo---
+----------
 
-constant topRight : integer := (columnNum + 1); 
+--constant topRight : integer := (columnNum + 1); 
 
---------
---ooo---
---x*o---
---ooo---
---------
-
-
-constant middleLeft : integer := 1; 
+----------
+----ooo---
+----x*o---
+----ooo---
+----------
 
 
---------
---ooo---
---o*x---
---ooo---
---------
+--constant middleLeft : integer := 1; 
 
-constant middleRight : integer := 1; 
 
---------
---ooo---
---o*o---
---xoo---
---------
+----------
+----ooo---
+----o*x---
+----ooo---
+----------
 
-constant bottomLeft : integer := (columnNum - 1);
+--constant middleRight : integer := 1; 
 
---------
---ooo---
---o*o---
---oxo---
---------
+----------
+----ooo---
+----o*o---
+----xoo---
+----------
 
-constant bottomMiddle : <type> := (columnNum); 
+--constant bottomLeft : integer := (columnNum - 1);
 
---------
---ooo---
---o*o---
---oox---
---------
+----------
+----ooo---
+----o*o---
+----oxo---
+----------
 
-constant bottonRight : <type> := (columnNum + 1); 
+--constant bottomMiddle : <type> := (columnNum); 
+
+----------
+----ooo---
+----o*o---
+----oox---
+----------
+
+--constant bottonRight : <type> := (columnNum + 1); 
 
 
 
@@ -140,7 +142,7 @@ end process state_update;
 
 
 
-update_proc : process(clk)
+update_proc : process(clk, current_state)
 
 --variable position : integer := 0;
 
@@ -148,150 +150,155 @@ BEGIN
 	if rising_edge(clk) then
 		-- if load_VGA_enable = '1' implies RAM is ready to be written to RAM2 
 		-- and for VGA to read it
-		if (load_VGA_enable = '0') then
+			
+			--if (load_to_VGA_enable = '0') then
 
-			if (read_enable = '1') then
-			-- update_RAM state
-				if (register_position < 9) then 
+				if (import = '1') then 
 
-					if (RAM1(register_position + 1) = '1') then 
+					RAM2 <= import_data;
 
-						nbr_count <= nbr_count + 1;
-					end if;
-				-- only add
-
-					if (RAM1(register_position + (columnNum - 1)) = '1') then 	
-
-						nbr_count <= nbr_count + 1;
-					end if; 
-
-					if (RAM1(register_position + columnNum) = '1') then 
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position + (columnNum + 1)) = '1') then 
-
-						nbr_count <= nbr_count + 1;
-					end if; 			 									
-
-				elsif (register_position > 90) then
-
-					if (RAM1(register_position - 1) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position - (columnNum - 1) ) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position - 10) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position - (columnNum + 1)) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-				-- only subtr
-
-				else 
-
-					if (RAM1(register_position - 1) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position - (columnNum - 1)) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position - (columnNum)) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;	
-
-					if (RAM1(register_position - (columnNum + 1)) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-
-					if (RAM1(register_position + 1) = '1') then
-
-		 				nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position + (columnNum - 1)) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position + columnNum) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
-
-					if (RAM1(register_position + (columnNum + 1)) = '1') then
-
-						nbr_count <= nbr_count + 1;
-					end if;
+					load_to_VGA_enable = '1';
 
 				end if;
 
+				if (ready_to_update = '1') then
 
-			if (RAM1(register_position) = '1') then
+					register_position = 0;
 
-				if (nbr_count = "0010") then
+					RAM1 <= RAM2;
 
-						RAM2(register_position) <= '1';
-
-				elsif (nbr_count = "0011") then
-
-					RAM2(register_position) <= '1';
-
-				else
-
-					RAM2(register_position) <= '0';
-
+				-- wait for however long it takes the vga to display content
 				end if;
 
-			elsif (RAM1(register_position) = '0') then
 
-				if (nbr_count = "0011") then
-
-					RAM2(register_position) <= '1';
-
-				end if;
-
-			end if;
-
-
+				if (read_enable = '0') then
+				-- update_RAM state
 					
+						if (register_position < 9) then 
 
-			register_position = register_position + 1;
+							if (RAM1(register_position + 1) = '1') then 
+
+								nbr_count <= nbr_count + 1;
+							end if;
+					-- only add
+
+							if (RAM1(register_position + (columnNum - 1)) = '1') then 	
+
+								nbr_count <= nbr_count + 1;
+							end if; 
+
+							if (RAM1(register_position + columnNum) = '1') then 
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position + (columnNum + 1)) = '1') then 
+
+								nbr_count <= nbr_count + 1;
+							end if; 			 									
+
+						elsif (register_position > 90) then
+
+							if (RAM1(register_position - 1) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position - (columnNum - 1) ) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position - 10) = '1') then
+
+							nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position - (columnNum + 1)) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+						else 
+
+							if (RAM1(register_position - 1) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position - (columnNum - 1)) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position - (columnNum)) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;	
+
+							if (RAM1(register_position - (columnNum + 1)) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
 
 
+							if (RAM1(register_position + 1) = '1') then
+
+				 				nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position + (columnNum - 1)) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position + columnNum) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+							if (RAM1(register_position + (columnNum + 1)) = '1') then
+
+								nbr_count <= nbr_count + 1;
+							end if;
+
+						end if;
 
 
+						if (RAM1(register_position) = '1') then
 
+							if (nbr_count = "0010") then
+
+								RAM2(register_position) <= '1';
+
+							elsif (nbr_count = "0011") then
+
+								RAM2(register_position) <= '1';
+
+							else
+
+								RAM2(register_position) <= '0';
+
+							end if;
+
+						elsif (RAM1(register_position) = '0') then
+
+							if (nbr_count = "0011") then
+
+								RAM2(register_position) <= '1';
+
+							end if;
+
+						end if;
+
+
+				register_position = register_position + 1;
 
 				end if;
-
-			end if;
-			--update_VGA STATE
-
 		end if;
+					--update_VGA STATE
 
 	end if;
-
 end process update_proc;
-
 
 
 
