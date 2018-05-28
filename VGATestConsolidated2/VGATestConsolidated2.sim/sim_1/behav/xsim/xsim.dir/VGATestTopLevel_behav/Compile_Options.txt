@@ -1,0 +1,1 @@
+-wto "a4340fc6315e4971bd84561404f6659f" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "VGATestTopLevel_behav" "xil_defaultlib.VGATestTopLevel" -log "elaborate.log" 

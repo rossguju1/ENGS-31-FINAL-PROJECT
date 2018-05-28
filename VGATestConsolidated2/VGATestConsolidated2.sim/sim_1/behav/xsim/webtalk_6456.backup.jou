@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Webtalk v2017.3.1 (64-bit)
+# SW Build 2035080 on Fri Oct 20 14:20:01 MDT 2017
+# IP Build 2034413 on Fri Oct 20 15:56:25 MDT 2017
+# Start of session at: Sun May 27 15:45:46 2018
+# Process ID: 6456
+# Current directory: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.sim/sim_1/behav/xsim
+# Command line: wbtcv.exe -mode batch -source O:/Documents/VGATestConsolidated2/VGATestConsolidated2.sim/sim_1/behav/xsim/xsim.dir/VGATestTopLevel_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.sim/sim_1/behav/xsim\webtalk.jou
+#-----------------------------------------------------------
+source O:/Documents/VGATestConsolidated2/VGATestConsolidated2.sim/sim_1/behav/xsim/xsim.dir/VGATestTopLevel_behav/webtalk/xsim_webtalk.tcl -notrace

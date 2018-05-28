@@ -1,0 +1,9 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../VGATestConsolidated2.srcs/sources_1/new/VGATestTopLevel.vhd" \
+"../../../../VGATestConsolidated2.srcs/sources_1/imports/Desktop/result/design.vhd" \
+"../../../../VGATestConsolidated2.srcs/sources_1/imports/Desktop/vga_test_pattern.vhd" \
+"../../../../VGATestConsolidated2.srcs/sim_1/new/VGAtestbench.vhdl" \
+
+# Do not sort compile order
+nosort

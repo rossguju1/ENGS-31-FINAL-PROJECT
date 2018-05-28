@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.3.1 (64-bit)
+# SW Build 2035080 on Fri Oct 20 14:20:01 MDT 2017
+# IP Build 2034413 on Fri Oct 20 15:56:25 MDT 2017
+# Start of session at: Sun May 27 17:28:18 2018
+# Process ID: 3996
+# Current directory: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.runs/synth_1
+# Command line: vivado.exe -log VGATestTopLevel.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source VGATestTopLevel.tcl
+# Log file: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.runs/synth_1/VGATestTopLevel.vds
+# Journal file: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source VGATestTopLevel.tcl -notrace

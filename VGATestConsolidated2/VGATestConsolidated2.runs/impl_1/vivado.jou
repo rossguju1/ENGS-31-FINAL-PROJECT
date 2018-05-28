@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.3.1 (64-bit)
+# SW Build 2035080 on Fri Oct 20 14:20:01 MDT 2017
+# IP Build 2034413 on Fri Oct 20 15:56:25 MDT 2017
+# Start of session at: Sun May 27 17:29:10 2018
+# Process ID: 5004
+# Current directory: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.runs/impl_1
+# Command line: vivado.exe -log VGATestTopLevel.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source VGATestTopLevel.tcl -notrace
+# Log file: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.runs/impl_1/VGATestTopLevel.vdi
+# Journal file: O:/Documents/VGATestConsolidated2/VGATestConsolidated2.runs/impl_1\vivado.jou
+#-----------------------------------------------------------
+source VGATestTopLevel.tcl -notrace
