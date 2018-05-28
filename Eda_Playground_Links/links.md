@@ -12,3 +12,5 @@ A [edaplayground site](https://www.edaplayground.com/) "Title"
 
 [VGA Timing](https://www.edaplayground.com/x/2BKF)
 
+[Game Controller](https://www.edaplayground.com/x/4bZx)
+
