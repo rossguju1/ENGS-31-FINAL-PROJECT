@@ -7,125 +7,53 @@ use IEEE.numeric_std.all;
 -- ( in RAM 2), and the last role for the controller is to output current state 
 -- to the VGA
 
-ENTITY controller is
+ENTITY game_controller is
 port( clk : in std_logic;
 
-		import : in std_logic;
+	old_r_data : in std_logic;
 
-		import_data : in array(0 to 4799) of std_logic;
+	r_enable_old : out std_logic;
 
-        alive_or_dead : out array(0 to 4799) of std_logic);
-END controller;
+	w_enable_old : out std_logic;
 
-Architecture behavior of controller is
+	old_r_addr : out std_logic_vector(12 downto 0);
 
---------- onstants for grid ----------------------------------------------------
+	old_w_data : out std_logic;
 
-constant columnNum : integer := 80;
+	new_r_data : in std_logic;
 
-constant rowNum : integer := 60;  
+	r_enable_new : out std_logic;
 
-constant gridSize : integer := (columns * rows); 
+	w_enable_new : out std_logic;
 
+	new_r_addr : out std_logic_vector(12 downto 0);
 
--------- Constants for neighboring organisms positions in a cell ---------------
-
-
---------
---xoo---
---o*o---
---ooo---
---------
+	new_w_data : out std_logic);
 
 
+END game_controller;
 
---constant topLeft : integer := (columnNum - 1); 
-
-----------
-----oxo---
-----o*o---
-----ooo---
-----------
-
---constant topMiddle : integer := (columnNum); 
-
-----------
-----oox---
-----o*o---
-----ooo---
-----------
-
---constant topRight : integer := (columnNum + 1); 
-
-----------
-----ooo---
-----x*o---
-----ooo---
-----------
-
-
---constant middleLeft : integer := 1; 
-
-
-----------
-----ooo---
-----o*x---
-----ooo---
-----------
-
---constant middleRight : integer := 1; 
-
-----------
-----ooo---
-----o*o---
-----xoo---
-----------
-
---constant bottomLeft : integer := (columnNum - 1);
-
-----------
-----ooo---
-----o*o---
-----oxo---
-----------
-
---constant bottomMiddle : <type> := (columnNum); 
-
-----------
-----ooo---
-----o*o---
-----oox---
-----------
-
---constant bottonRight : <type> := (columnNum + 1); 
-
-
-
+architecture behavior of controller is
 
 -------- State type and state signals declarations ------------------------------
 
 
-type state_type is (update_vga, update_RAM, load_init_cond);
+type state_type is (start, read_update, write_update, receive, request, read_transfer, write_transfer, idle);
 
 signal current_state, next_state : state_type;
 
 
 -------- Register 1D memmory and signals declaration ----------------------------
 
-type register_memory is array(0 to gridSize) of std_logic;
 
 
-signal RAM1, RAM2 : register_memory;
+signal nbr_count : integer := 0;
+
+signal check_counter : integer := 0;
+
+signal position : unsigned(12 downto 0) := "0000000000000";
 
 
--------- Declaration and initialization of Process Signals ----------------------
-
-signal register_position : integer := 0;
-
-
-signal load_VGA_enable, load_enable, read_enable : std_logic := '0';
-
-signal nbr_count : unsigned(3 downto 0) := "0000";
 
 -------- state_update process ----------------------------------------------------
 
@@ -140,165 +68,199 @@ end process state_update;
 
 
 
+next_state_logic : process(clk, current_state)
 
+begin
 
-update_proc : process(clk, current_state)
+	if rising_edge(clk, current_state) then
 
---variable position : integer := 0;
+		case (current_state) is
 
-BEGIN
-	if rising_edge(clk) then
-		-- if load_VGA_enable = '1' implies RAM is ready to be written to RAM2 
-		-- and for VGA to read it
-			
-			--if (load_to_VGA_enable = '0') then
+			when (start) =>
 
-				if (import = '1') then 
+				position <= "0000000000000";
 
-					RAM2 <= import_data;
+				check_counter = 0;
 
-					load_to_VGA_enable = '1';
+				next_state <= request;
 
-				end if;
+			-- request address
+			when (request) => 
 
-				if (ready_to_update = '1') then
+					r_enable_old = '1';
 
-					register_position = 0;
+					if (check_counter = 0) then 
 
-					RAM1 <= RAM2;
+						old_r_addr = position - "0000001010001";
 
-				-- wait for however long it takes the vga to display content
-				end if;
+						next_state <= recieve;
 
+					elsif (check_counter = 1) then 
 
-				if (read_enable = '0') then
-				-- update_RAM state
+						old_r_addr <= position - "0000001010000";
+
+						next_state <= recieve;
+
+					elsif (check_counter = 2) then
+
+					 	old_r_addr <= position - "0000001001111";
+
+						next_state <= recieve;
+
+					elsif (check_counter = 3) then
+
+							old_r_addr <= position - "0000000000001";
+
+							next_state <= recieve;
+
+					elsif (check_counter = 4) then
+
+							old_r_addr <= position + "0000000000001";
+
+							next_state <= recieve;
+
+					elsif (check_counter = 5) then
+
+							old_r_addr <= position + "0000001001111";
+
+							next_state <= recieve;
+
+					elsif (check_counter = 6) then
+
+						old_r_addr <= position + "0000001010000";
+
+						next_state <= recieve;
+
+					elsif (check_counter = 7) then
+
+						old_r_addr <= position + "0000001010001";
+
+						next_state <= recieve;
+
+					 elsif (check_counter = 8) then
+
+					 	old_r_addr <= position;
+					 	
+						next_state <= write_update;
+
+					end if; 
+
 					
-						if (register_position < 9) then 
+			--just request address and set equal to out read addresss
 
-							if (RAM1(register_position + 1) = '1') then 
+			-- recieved data of address, use logic to increment nbr_counter
+			when (recieve) =>
 
-								nbr_count <= nbr_count + 1;
-							end if;
-					-- only add
+				if (old_r_data = '1') then
 
-							if (RAM1(register_position + (columnNum - 1)) = '1') then 	
+					nbr_count <= nbr_count + 1;
 
-								nbr_count <= nbr_count + 1;
-							end if; 
+				end if;
 
-							if (RAM1(register_position + columnNum) = '1') then 
+				check_counter = check_counter + 1;
 
-								nbr_count <= nbr_count + 1;
-							end if;
+				next_state <= request;
 
-							if (RAM1(register_position + (columnNum + 1)) = '1') then 
+			when (write_update) => 
 
-								nbr_count <= nbr_count + 1;
-							end if; 			 									
+					w_enable_new = '1';
 
-						elsif (register_position > 90) then
+					new_w_addr <= position;
 
-							if (RAM1(register_position - 1) = '1') then
+					if (old_r_data = '1') then
 
-								nbr_count <= nbr_count + 1;
-							end if;
+						if (nbr_count = 2) then
 
-							if (RAM1(register_position - (columnNum - 1) ) = '1') then
+							new_w_data <= '1';
 
-								nbr_count <= nbr_count + 1;
-							end if;
+						elsif (nbr_count = 3) then
 
-							if (RAM1(register_position - 10) = '1') then
+							new_w_data <= '1';
 
-							nbr_count <= nbr_count + 1;
-							end if;
-
-							if (RAM1(register_position - (columnNum + 1)) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;
-						else 
-
-							if (RAM1(register_position - 1) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;
-
-							if (RAM1(register_position - (columnNum - 1)) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;
-
-							if (RAM1(register_position - (columnNum)) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;	
-
-							if (RAM1(register_position - (columnNum + 1)) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;
-
-
-							if (RAM1(register_position + 1) = '1') then
-
-				 				nbr_count <= nbr_count + 1;
-							end if;
-
-							if (RAM1(register_position + (columnNum - 1)) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;
-
-							if (RAM1(register_position + columnNum) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;
-
-							if (RAM1(register_position + (columnNum + 1)) = '1') then
-
-								nbr_count <= nbr_count + 1;
-							end if;
+						else
+							
+							new_w_data <= '0';
 
 						end if;
 
+					elsif (old_r_data = '0') then
+						
+							if (nbr_count = 2) then
 
-						if (RAM1(register_position) = '1') then
-
-							if (nbr_count = "0010") then
-
-								RAM2(register_position) <= '1';
-
-							elsif (nbr_count = "0011") then
-
-								RAM2(register_position) <= '1';
+								new_w_data <= '1';
 
 							else
-
-								RAM2(register_position) <= '0';
-
-							end if;
-
-						elsif (RAM1(register_position) = '0') then
-
-							if (nbr_count = "0011") then
-
-								RAM2(register_position) <= '1';
+								
+								new_w_data <= '0';
 
 							end if;
 
-						end if;
+					end if;
 
 
-				register_position = register_position + 1;
+					if (position = "1001011000000") then
 
-				end if;
+						position <= "0000000000000";
+
+						next_state <= read_transfer;
+
+					else 
+
+						check_counter = 0;
+
+						position <= position + 1;
+
+						next_state <= request;
+
+					end if;
+
+			when (read_transfer) =>
+
+				r_enable_new = '1';
+
+				new_r_addr <= position;
+
+				next_state <= write_transfer;
+
+
+			when (write_transfer) =>
+
+				if (position = "1001011000000") then
+
+					next_state <= idle;
+
+				else
+					
+					w_enable_old = '1';
+
+					old_r_addr <= position;
+
+					old_w_data <= new_r_data;
+
+					position <= position + 1;
+
+					next_state <= read_transfer;
+
+				end if
+
+			when idle =>
+
+				wait 50 ns;
+
+				next_state <= start;
+
+			when others => next_state <= idle;
+
+			end case;
+
 		end if;
-					--update_VGA STATE
 
-	end if;
-end process update_proc;
+end process next_state_logic;
+
+end behavior;
+
+
+
 
 
 
