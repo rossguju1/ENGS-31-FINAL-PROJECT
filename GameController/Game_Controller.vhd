@@ -142,6 +142,7 @@ begin
 									next_state <= read_transfer;
                                 else 
                                 	check_counter <= 0;
+                                    nbr_count <= 0;
                                		position <= position + 1;
                                 	next_state <= request;
                               	end if;
