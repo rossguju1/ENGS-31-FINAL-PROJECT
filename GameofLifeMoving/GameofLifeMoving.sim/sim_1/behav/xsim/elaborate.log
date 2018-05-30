@@ -1,0 +1,31 @@
+Vivado Simulator 2017.3
+Copyright 1986-1999, 2001-2016 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2017.3/bin/unwrapped/win64.o/xelab.exe -wto 56a9dbc28dec4c94bc3b3218eb42adb8 --incr --debug typical --relax --mt 2 -L blk_mem_gen_v8_4_0 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot VGAtestbench_behav xil_defaultlib.VGAtestbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-1783] select index 30 into current_contents is out of bounds [/wrk/2017.sub/2017.3.1/nightly/2017_10_20_2035080/packages/customer/vivado/data/ip/xilinx/blk_mem_gen_v8_4/simulation/blk_mem_gen_v8_4.v:2419]
+WARNING: [VRFC 10-1783] select index 1 into current_contents is out of bounds [/wrk/2017.sub/2017.3.1/nightly/2017_10_20_2035080/packages/customer/vivado/data/ip/xilinx/blk_mem_gen_v8_4/simulation/blk_mem_gen_v8_4.v:2420]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.numeric_std
+Compiling package unisim.vcomponents
+Compiling package ieee.std_logic_arith
+Compiling package ieee.std_logic_unsigned
+Compiling package vl.vl_types
+Compiling module xil_defaultlib.glbl
+Compiling architecture behavioral of entity xil_defaultlib.vga_test_pattern [vga_test_pattern_default]
+Compiling architecture behavior of entity xil_defaultlib.VGA [vga_default]
+Compiling module blk_mem_gen_v8_4_0.blk_mem_gen_v8_4_0_output_stage(...
+Compiling module blk_mem_gen_v8_4_0.blk_mem_gen_v8_4_0_softecc_outpu...
+Compiling module blk_mem_gen_v8_4_0.blk_mem_gen_v8_4_0_mem_module(C_...
+Compiling module blk_mem_gen_v8_4_0.blk_mem_axi_regs_fwd_v8_4(C_DATA...
+Compiling module blk_mem_gen_v8_4_0.blk_mem_gen_v8_4_0(C_FAMILY="art...
+Compiling module xil_defaultlib.old_state_RAM
+Compiling architecture behavioral of entity xil_defaultlib.VGATestTopLevel [vgatesttoplevel_default]
+Compiling architecture testbench of entity xil_defaultlib.vgatestbench
+Built simulation snapshot VGAtestbench_behav
