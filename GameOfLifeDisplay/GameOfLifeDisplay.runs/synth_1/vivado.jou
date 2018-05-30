@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.3.1 (64-bit)
+# SW Build 2035080 on Fri Oct 20 14:20:01 MDT 2017
+# IP Build 2034413 on Fri Oct 20 15:56:25 MDT 2017
+# Start of session at: Tue May 29 22:47:24 2018
+# Process ID: 23428
+# Current directory: O:/Documents/GameOfLifeDisplay/GameOfLifeDisplay.runs/synth_1
+# Command line: vivado.exe -log VGATestTopLevel.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source VGATestTopLevel.tcl
+# Log file: O:/Documents/GameOfLifeDisplay/GameOfLifeDisplay.runs/synth_1/VGATestTopLevel.vds
+# Journal file: O:/Documents/GameOfLifeDisplay/GameOfLifeDisplay.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source VGATestTopLevel.tcl -notrace
