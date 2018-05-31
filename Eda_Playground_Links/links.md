@@ -15,3 +15,5 @@ A [edaplayground site](https://www.edaplayground.com/) "Title"
 [Game Controller](https://www.edaplayground.com/x/4bZx)
 
 [GoL Pixel Generation](https://www.edaplayground.com/x/2Uvk)
+
+[Input Controller](https://www.edaplayground.com/x/4Xbp)
