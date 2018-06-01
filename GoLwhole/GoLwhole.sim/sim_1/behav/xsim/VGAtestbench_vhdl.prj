@@ -1,0 +1,9 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../GameOfLifeDisplay.srcs/sources_1/new/PixelGenerator.vhd" \
+"../../../../../VGATestConsolidated2/VGATestConsolidated2.srcs/sources_1/new/VGATestTopLevel.vhd" \
+"../../../../../VGATestConsolidated2/VGATestConsolidated2.srcs/sources_1/imports/Desktop/result/design.vhd" \
+"../../../../../VGATestConsolidated2/VGATestConsolidated2.srcs/sim_1/new/VGAtestbench.vhdl" \
+
+# Do not sort compile order
+nosort
